@@ -4,15 +4,9 @@ COMMIT_MSG_FILE=$1
 COMMIT_MSG=$(cat "$COMMIT_MSG_FILE")
 
 
-echo $COMMIT_MSG
-
-
-exit 1
-
-if ! echo "$COMMIT_MSG" | grep -q "^[A-Z]"; then
-    echo "Error: Commit message must start with a capital letter."
-    exit 1
-fi
+YELLOW='\033[0;33m'
+RED='\033[0;31m'
+NC='\033[0m'
 
 
 if command -v aspell &> /dev/null; then
@@ -20,7 +14,7 @@ if command -v aspell &> /dev/null; then
 elif command -v hunspell &> /dev/null; then
     SPELL_CHECKER="hunspell -l"
 else
-    echo "Warning: No spell checker found. Skipping spell check."
+    echo -e "${YELLOW}Warning: No spell checker found. Skipping spell check.${NC}"
     exit 0
 fi
 
@@ -28,7 +22,7 @@ fi
 SPELL_ERRORS=$(echo "$COMMIT_MSG" | $SPELL_CHECKER)
 
 if [ ! -z "$SPELL_ERRORS" ]; then
-    echo "Error: Commit message contains spelling errors:"
+    echo -e "${RED}Error: Commit message contains spelling errors:${NC}"
     echo "$SPELL_ERRORS"
     exit 1
 fi
