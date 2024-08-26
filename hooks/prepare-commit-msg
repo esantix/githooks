@@ -13,6 +13,10 @@ NC='\033[0m'
 
 
 ############################################# SPELL CHECK
+DESCRIPTION="""
+This spell check ignores filenames from this repository and words starting woth uppercase
+"""
+
 
 MSG_CHECK="$COMMIT_MSG" 
 REPO_FILES=$(find . -path "./.git" -prune -o -type f -exec basename {} \;)
