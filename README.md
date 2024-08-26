@@ -1,0 +1,3 @@
+# GitHooks
+
+Global git hooks
