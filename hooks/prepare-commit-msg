@@ -8,6 +8,29 @@ YELLOW='\033[0;33m'
 RED='\033[0;31m'
 NC='\033[0m'
 
+
+
+
+
+############################################# SPELL CHECK
+
+MSG_CHECK="$COMMIT_MSG" 
+REPO_FILES=$(find . -path "./.git" -prune -o -type f -exec basename {} \;)
+MSG_CHECK=$(awk -v a="$MSG_CHECK" -v b="$REPO_FILES" '
+BEGIN {
+    split(a, arrA, " ");
+    split(b, arrB, " ");
+    # Create an associative array for words in B
+    for (i in arrB) bWords[arrB[i]] = 1;
+    # Loop through words in A and print those not in B
+    for (i in arrA) {
+        if (arrA[i] in bWords) continue;
+        if (arrA[i] != "") printf "%s ", arrA[i];
+    }
+    print "";
+}')
+
+
 if command -v aspell &> /dev/null; then
     SPELL_CHECKER="aspell list"
 
@@ -17,7 +40,7 @@ else
 fi
 
 
-SPELL_ERRORS=$(echo "$COMMIT_MSG" | $SPELL_CHECKER)
+SPELL_ERRORS=$(echo "$MSG_CHECK" | $SPELL_CHECKER)
 SPELL_ERRORS=$(echo $SPELL_ERRORS | grep -o '\b[a-z][a-zA-Z0-9]*\b') # Remove upercase case
 
 if [ ! -z "$SPELL_ERRORS" ]; then
@@ -27,3 +50,4 @@ if [ ! -z "$SPELL_ERRORS" ]; then
 fi
 
 exit 0
+############################################# SPELL CHECK
