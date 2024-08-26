@@ -4,6 +4,11 @@ COMMIT_MSG_FILE=$1
 COMMIT_MSG=$(cat "$COMMIT_MSG_FILE")
 
 
+echo $COMMIT_MSG
+
+
+exit 1
+
 if ! echo "$COMMIT_MSG" | grep -q "^[A-Z]"; then
     echo "Error: Commit message must start with a capital letter."
     exit 1
