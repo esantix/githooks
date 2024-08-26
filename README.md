@@ -8,5 +8,6 @@ Global git hooks collection
 
 To set global hooks in this directory run
 ```bash
-./set_global.sh
+chmod +x ./hooks/*
+git config --global core.hooksPath ./hooks
 ```

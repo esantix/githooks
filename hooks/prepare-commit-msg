@@ -4,42 +4,28 @@ COMMIT_MSG_FILE=$1
 COMMIT_MSG=$(cat "$COMMIT_MSG_FILE")
 
 
-YELLOW='\033[0;33m'
-RED='\033[0;31m'
-NC='\033[0m'
-
-
-is_terminal() {
-  [[ -t 1 ]]
-}
-
-
-if is_terminal; then
+if [[ -t 1 ]]; then # Use colors on terminal
     YELLOW='\033[0;33m'
     RED='\033[0;31m'
     NC='\033[0m'
-else
-    YELLOW=''
-    RED=''
-    NC=''
 fi
 
 
-############################################# SPELL CHECK
-DESCRIPTION="""
-This spell check ignores filenames from this repository and words starting woth uppercase
+############################################################
+""" 
+This spell check ignores filenames from this repository 
+and words starting with uppercase
 """
-
 
 MSG_CHECK="$COMMIT_MSG" 
 REPO_FILES=$(find . -path "./.git" -prune -o -type f -exec basename {} \;)
+
+# Remove from words that match reposiotry filenames
 MSG_CHECK=$(awk -v a="$MSG_CHECK" -v b="$REPO_FILES" '
 BEGIN {
     split(a, arrA, " ");
     split(b, arrB, " ");
-    # Create an associative array for words in B
     for (i in arrB) bWords[arrB[i]] = 1;
-    # Loop through words in A and print those not in B
     for (i in arrA) {
         if (arrA[i] in bWords) continue;
         if (arrA[i] != "") printf "%s ", arrA[i];
@@ -47,19 +33,18 @@ BEGIN {
     print "";
 }')
 
-
-
 if command -v aspell &> /dev/null; then
     SPELL_CHECKER="aspell list"
 
 else
-    echo -e "${YELLOW}Warning: No spell checker found. Skipping spell check.${NC}"
+    echo -e "${RED}Error: 'aspell' not found. Please install.${NC}"
+    echo -e "Use --no-verify on git command to bypass check"
     exit 1
 fi
 
 
 SPELL_ERRORS=$(echo "$MSG_CHECK" | $SPELL_CHECKER)
-SPELL_ERRORS=$(echo $SPELL_ERRORS | grep -o '\b[a-z][a-zA-Z0-9]*\b') # Remove upercase case
+SPELL_ERRORS=$(echo $SPELL_ERRORS | grep -o '\b[a-z][a-zA-Z0-9]*\b') # Ignore Capitalized words
 
 if [ ! -z "$SPELL_ERRORS" ]; then
     echo -e "${RED}Error: Commit message contains spelling errors:${NC} ${SPELL_ERRORS}"
@@ -68,4 +53,4 @@ fi
 
 exit 0
 
-############################################# SPELL CHECK
+#############################################
