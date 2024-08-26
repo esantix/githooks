@@ -9,7 +9,20 @@ RED='\033[0;31m'
 NC='\033[0m'
 
 
+is_terminal() {
+  [[ -t 1 ]]
+}
 
+
+if is_terminal; then
+    YELLOW='\033[0;33m'
+    RED='\033[0;31m'
+    NC='\033[0m'
+else
+    YELLOW=''
+    RED=''
+    NC=''
+fi
 
 
 ############################################# SPELL CHECK
@@ -35,12 +48,13 @@ BEGIN {
 }')
 
 
+
 if command -v aspell &> /dev/null; then
     SPELL_CHECKER="aspell list"
 
 else
     echo -e "${YELLOW}Warning: No spell checker found. Skipping spell check.${NC}"
-    exit 0
+    exit 1
 fi
 
 
@@ -48,10 +62,10 @@ SPELL_ERRORS=$(echo "$MSG_CHECK" | $SPELL_CHECKER)
 SPELL_ERRORS=$(echo $SPELL_ERRORS | grep -o '\b[a-z][a-zA-Z0-9]*\b') # Remove upercase case
 
 if [ ! -z "$SPELL_ERRORS" ]; then
-    echo -e "${RED}Error: Commit message contains spelling errors:${NC}"
-    echo "$SPELL_ERRORS"
+    echo -e "${RED}Error: Commit message contains spelling errors:${NC} ${SPELL_ERRORS}"
     exit 1
 fi
 
 exit 0
+
 ############################################# SPELL CHECK
