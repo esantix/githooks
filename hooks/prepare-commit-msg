@@ -10,9 +10,7 @@ NC='\033[0m'
 
 
 if command -v aspell &> /dev/null; then
-    SPELL_CHECKER="aspell list"
-elif command -v hunspell &> /dev/null; then
-    SPELL_CHECKER="hunspell -l"
+    SPELL_CHECKER="aspell list --ignore 1 --add-filter "pattern" --pattern '[A-Z][a-zA-Z]*'"
 else
     echo -e "${YELLOW}Warning: No spell checker found. Skipping spell check.${NC}"
     exit 0
