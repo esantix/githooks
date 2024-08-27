@@ -1,5 +1,3 @@
 #!/bin/bash
+ggshield secret scan pre-commit "$@"
 
-echo "Running pre-commit script."
-
-exit 1

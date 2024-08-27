@@ -12,10 +12,7 @@ fi
 
 
 ############################################################
-""" 
-This spell check ignores filenames from this repository 
-and words starting with uppercase
-"""
+
 
 MSG_CHECK="$COMMIT_MSG" 
 REPO_FILES=$(find . -path "./.git" -prune -o -type f -exec basename {} \;)

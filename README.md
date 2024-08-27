@@ -3,6 +3,9 @@
 ## Description
 Global git hooks collection
 
+## Requires:
+ - aspell
+ - ggshield
 
 ## Usage
 
